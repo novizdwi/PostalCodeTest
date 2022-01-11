@@ -11,6 +11,8 @@ namespace PostalCodeTest.ViewModels
     {
         public List<Village> VillageList { get; set; }
         public List<SelectListItem> CityList { get; set; }
+        public string FilterField { get; set; }
+        public string SearchText { get; set; }
         public int ProvinceId { get; set; }
         public string ProvinceName { get; set; }
         public int CityId { get; set; }

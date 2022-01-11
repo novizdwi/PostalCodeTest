@@ -13,102 +13,128 @@
 </a>
 <br />
 <br />
+    <div class="row pb-4">
+        <div class="col-md-2">
+            @Html.DropDownList("fieldFilter", new SelectList(ViewBag.FieldFilter), new { @class = "form-control" })
+        </div>
 
-<table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-    <thead>
-        <tr>
-            <th class="th-sm">
-                Kode Pos
-            </th>
-            <th class="th-sm">
-                Kelurahan
-            </th>
-            <th class="th-sm">
-                Kecamatan
-            </th>
-            <th class="th-sm">
-                Jenis
-            </th>
-            <th class="th-sm">
-                kabupaten
-            </th>
-            <th class="th-sm">
-                Provinsi
-            </th>
-            <th class="th-sm">
-                Aksi
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null)
-        {
-            @foreach (var item in Model)
+        <div class="col-md-3 pl-0">
+            @Html.TextBox("searchText", (String)ViewBag.searchText, new { @class = "form-control" })
+        </div>
+        <div class="col-md-3 pl-0">
+            <button id="btnFilter" class="btn btn-primary" onclick="btnFilterOnClick">
+                Filter
+            </button>
+        </div>
+    </div>
+
+    <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th class="th-sm">
+                    Kode Pos
+                </th>
+                <th class="th-sm">
+                    Kelurahan
+                </th>
+                <th class="th-sm">
+                    Kecamatan
+                </th>
+                <th class="th-sm">
+                    Jenis
+                </th>
+                <th class="th-sm">
+                    kabupaten
+                </th>
+                <th class="th-sm">
+                    Provinsi
+                </th>
+                <th class="th-sm">
+                    Aksi
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
             {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.PostalCode)</td>
-                    <td>@Html.DisplayFor(modelItem => item.VillageName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.DistrictName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.CityType)</td>
-                    <td>@Html.DisplayFor(modelItem => item.CityName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.ProvinceName)</td>
-                    <td>
-                        <button name="btnEdit" type="button" class="btn btn-primary" onclick="btnEditOnClick(@item.Id)">Edit</button>
-                        <button name="btnDelete" type="button" class="btn btn-danger" onclick="btnDeleteOnClick(@item.Id)">Delete</button>
-                    </td>
-                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.PostalCode)</td>
+                        <td>@Html.DisplayFor(modelItem => item.VillageName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DistrictName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CityType)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CityName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ProvinceName)</td>
+                        <td>
+                            <button name="btnEdit" type="button" class="btn btn-primary" onclick="btnEditOnClick(@item.Id)">Edit</button>
+                            <button name="btnDelete" type="button" class="btn btn-danger" onclick="btnDeleteOnClick(@item.Id)">Delete</button>
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-@if (ViewBag.Page - 1 > 0)
-{
-    <a href="@Url.Action("Index", new { page = 1 })">
-        First
-    </a>
-    <span>&ensp;</span>
-    <a href="@Url.Action("Index", new { page = ViewBag.Page - 1 })">
-        &laquo; Prev
-    </a>
+    @if (ViewBag.Page - 1 > 0)
+    {
+        <a href="@Url.Action("Index", new {field = ViewBag.field, searchText = ViewBag.searchText, page = 1 })">
+            &laquo; First
+        </a>
+        <span>&ensp;</span>
+        <a href="@Url.Action("Index", new {field = ViewBag.field, searchText = ViewBag.searchText, page = ViewBag.Page - 1 })">
+            &#60; Prev
+        </a>
 
-}
-&emsp;&emsp;
-@if (ViewBag.Page < ViewBag.MaxPage)
-{
-    <a href="@Url.Action("Index", new { page = ViewBag.Page + 1 })">
-        Next &raquo;
-    </a>
-    <span>&ensp;</span>
-    <a href="@Url.Action("Index", new { page = ViewBag.MaxPage })">
-        Last
-    </a>
-}
-<br />
-Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    }
+    &emsp; &emsp;
+    @if (ViewBag.Page < ViewBag.MaxPage)
+    {
+        <a href="@Url.Action("Index", new {field = ViewBag.field, searchText = ViewBag.searchText, page = ViewBag.Page + 1 })">
+            Next &#62;
+        </a>
+        <span>&ensp;</span>
+        <a href="@Url.Action("Index", new {field = ViewBag.field, searchText = ViewBag.searchText, page = ViewBag.MaxPage })">
+            Last &raquo;
+        </a>
+    }
+    <br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
 
 
-<div class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Modal body text goes here.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#btnFilter").click(function () {
+            var field = $('#fieldFilter').val();
+            var searchText = $('#searchText').val();
+
+            var url = '@Html.Raw(@Url.Action("Index", new { field = "__field__", searchText = "__searchText__" }))'
+                url = url.replace('__field__', field).replace('__searchText__', searchText);
+            window.location.href = url;
+        });
+    })
 
     function btnEditOnClick(id)
     {

@@ -18,6 +18,8 @@ namespace PostalCodeTest.Controllers
         protected IHttpContextAccessor contextAccessor;
         protected ApplicationDbContext context;
         private Service villageService;
+        List<string> FieldFilter = new List<string> { "Provinsi", "Kelurahan" };
+        
         public PostalController(IHttpContextAccessor _contextAccessor,
             ApplicationDbContext _context, 
             Service _villageService)
@@ -27,14 +29,19 @@ namespace PostalCodeTest.Controllers
             villageService = _villageService;
         }
 
-        public ViewResult Index(int? page)
+        public ViewResult Index(string field, string searchText, int? page)
         {
+
             int pageNumber = (page ?? 1);
             int recordPerPage = 10;
             int totalPage = villageService.CountTotalPage(recordPerPage);
-            List<VillageViewModel> viewModel = villageService.GetAll(pageNumber, recordPerPage);
+            List<VillageViewModel> viewModel = villageService.GetAll(field, searchText, pageNumber, recordPerPage);
             ViewBag.Page = pageNumber;
             ViewBag.MaxPage = totalPage;
+            ViewBag.field = field;
+            ViewBag.searchText = searchText;
+            ViewBag.FieldFilter = FieldFilter;
+
             return View(viewModel.ToPagedList(pageNumber, recordPerPage));
         }
 

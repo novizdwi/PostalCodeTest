@@ -22,7 +22,7 @@ namespace PostalCodeTest.Services
             return ret / recordPerPage;
         }
 
-        public List<VillageViewModel> GetAll(int page, int recordPerPage)
+        public List<VillageViewModel> GetAll(string field, string searchText, int page, int recordPerPage)
         {
 
             var ret = (from village in db.Villages
@@ -42,6 +42,18 @@ namespace PostalCodeTest.Services
                            VillageName = village.VillageName,
                            PostalCode = village.PostalCode,
                        });
+
+            if (!string.IsNullOrEmpty(field) && !string.IsNullOrEmpty(searchText))
+            {
+                if (field == "Provinsi")
+                {
+                    ret = ret.Where(x => x.ProvinceName.Contains(searchText));
+                }
+                else 
+                {
+                    ret = ret.Where(x => x.VillageName.Contains(searchText));
+                }
+            }
 
             ret.Skip((page-1)*recordPerPage).Take(recordPerPage);
             return ret.ToList();
