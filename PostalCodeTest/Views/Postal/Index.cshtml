@@ -1,8 +1,122 @@
-﻿@{
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<PostalCodeTest.ViewModels.VillageViewModel>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
     ViewData["Title"] = "Postal";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1> Daftar Kelurahan</h1>
+
+<a href="@Url.Action("_Edit")">
+    Tambah Kelurahan
+</a>
+<br />
+<br />
+
+<table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="th-sm">
+                Kode Pos
+            </th>
+            <th class="th-sm">
+                Kelurahan
+            </th>
+            <th class="th-sm">
+                Kecamatan
+            </th>
+            <th class="th-sm">
+                Jenis
+            </th>
+            <th class="th-sm">
+                kabupaten
+            </th>
+            <th class="th-sm">
+                Provinsi
+            </th>
+            <th class="th-sm">
+                Aksi
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.PostalCode)</td>
+                    <td>@Html.DisplayFor(modelItem => item.VillageName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.DistrictName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CityType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CityName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ProvinceName)</td>
+                    <td>
+                        <button name="btnEdit" type="button" class="btn btn-primary" onclick="btnEditOnClick(@item.Id)">Edit</button>
+                        <button name="btnDelete" type="button" class="btn btn-danger" onclick="btnDeleteOnClick(@item.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@if (ViewBag.Page - 1 > 0)
+{
+    <a href="@Url.Action("Index", new { page = 1 })">
+        First
+    </a>
+    <span>&ensp;</span>
+    <a href="@Url.Action("Index", new { page = ViewBag.Page - 1 })">
+        &laquo; Prev
+    </a>
+
+}
+&emsp;&emsp;
+@if (ViewBag.Page < ViewBag.MaxPage)
+{
+    <a href="@Url.Action("Index", new { page = ViewBag.Page + 1 })">
+        Next &raquo;
+    </a>
+    <span>&ensp;</span>
+    <a href="@Url.Action("Index", new { page = ViewBag.MaxPage })">
+        Last
+    </a>
+}
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script type="text/javascript">
+
+    function btnEditOnClick(id)
+    {
+        window.location.href = '@Url.Action("_Edit", new { Id = "__Id__"})'.replace('__Id__', id);
+    }
+
+
+    function btnDeleteOnClick(id) {
+
+    }
+</script>

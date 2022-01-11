@@ -32,17 +32,14 @@ namespace PostalCodeTest
             var connectionString = Configuration.GetConnectionString("ApplicationDbContext");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString(nameof(ApplicationDbContext))));
             
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddDbContext<ApplicationDbContext>(options =>  
                 options.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext"))
             );
 
-            services.AddScoped<ProvinceService, ProvinceService>();
-            services.AddScoped<CityService, CityService>();
-            services.AddScoped<DistrictService, DistrictService>();
-            services.AddScoped<VillageService, VillageService>();
+            services.AddScoped<Service, Service>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,7 +66,7 @@ namespace PostalCodeTest
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Postal}/{action=Index}/{id?}");
             });
 
 

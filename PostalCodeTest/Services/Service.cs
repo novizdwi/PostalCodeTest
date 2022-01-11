@@ -8,18 +8,22 @@ using System.Threading.Tasks;
 
 namespace PostalCodeTest.Services
 {
-    public class VillageService
+    public class Service
     {
         private readonly ApplicationDbContext db;
         protected readonly IConfiguration Configuration;
-        public VillageService(ApplicationDbContext context)
+        public Service(ApplicationDbContext context)
         {
             db = context;
         }
-
-        public List<VillageViewModel> GetAll()
+        public int CountTotalPage(int recordPerPage = 10)
         {
-            var y = db.Villages.ToList();
+            var ret = db.Villages.Count();
+            return ret / recordPerPage;
+        }
+
+        public List<VillageViewModel> GetAll(int page, int recordPerPage)
+        {
 
             var ret = (from village in db.Villages
                        join district in db.Districts on village.DistrictId equals district.Id
@@ -39,7 +43,36 @@ namespace PostalCodeTest.Services
                            PostalCode = village.PostalCode,
                        });
 
+            ret.Skip((page-1)*recordPerPage).Take(recordPerPage);
             return ret.ToList();
+        }
+
+        public Village FindOne(int? id = 0)
+        {
+            return db.Villages.Find(id);
+
+        }
+
+        public async Task<int> Delete(int id)
+        {
+            try
+            {
+                var del = db.Villages.Find(id);
+                if (del != null)
+                {
+                    db.Villages.Remove(del);
+                    var success = await db.SaveChangesAsync() > 0;
+                    if (success)
+                    {
+                        return 1;
+                    }
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
     }
 }
