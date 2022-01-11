@@ -49,6 +49,9 @@ namespace PostalCodeTest.Controllers
         {
             ViewBag.PageName = Id == null ? "Tambah Kelurahan" : "Ubah Kelurahan";
             ViewBag.IsEdit = Id == null ? false : true;
+            ViewBag.Id = Id;
+            ViewBag.ProvinceList = villageService.GetProvince();
+
             if (Id == null)
             {
                 return View();
@@ -63,6 +66,59 @@ namespace PostalCodeTest.Controllers
 
                 return View(village);
             }
+        }
+
+        [HttpPost]
+        public ActionResult CityJson(string id)
+        {
+            var recs = villageService.GetCity(id);
+            return Json(recs);
+        }
+
+        [HttpPost]
+        public ActionResult DistrictJson(string id)
+        {
+            var recs = villageService.GetDistrict(id);
+            return Json(recs);
+        }
+
+        public async Task<ActionResult> Add(Village model)
+        {
+            var success = false;
+            if (ModelState.IsValid)
+            {
+                var result = await villageService.Save(model);
+                if (result == 1)
+                {
+                    success = true;
+                }
+            }
+
+            return Json(new
+            {
+                Success = success
+            });
+
+        }
+        public async Task<ActionResult> Edit(string Id, Village model)
+        {
+            var success = false;
+            model.Id = Convert.ToInt32(Id);
+
+            if (ModelState.IsValid)
+            {
+                var result = await villageService.Edit(model);
+                if (result == 1)
+                {
+                    success = true;
+                }
+            }
+
+            return Json(new
+            {
+                Success = success
+            });
+
         }
 
         public async Task<ActionResult> Delete(int Id)

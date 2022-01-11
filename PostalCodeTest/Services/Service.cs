@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using PostalCodeTest.Models;
 using PostalCodeTest.ViewModels;
 using System;
@@ -20,6 +21,33 @@ namespace PostalCodeTest.Services
         {
             var ret = db.Villages.Count();
             return ret / recordPerPage;
+        }
+        public List<SelectListItem> GetProvince() 
+        {
+            var ret = (from p in db.Provinces
+            select new SelectListItem() { 
+                Value = p.Id.ToString(),
+                Text = p.ProvinceName,
+            });
+            return ret.ToList();
+        }
+        public List<SelectListItem> GetCity( string provinceId) 
+        {
+            var ret = (from p in db.Cities.Where(x=> x.ProvinceId.ToString() == provinceId)
+                       select new SelectListItem() { 
+                Value = p.Id.ToString(),
+                Text = p.CityType+" "+p.CityName,
+            });
+            return ret.ToList();
+        }
+        public List<SelectListItem> GetDistrict( string cityId) 
+        {
+            var ret = (from p in db.Districts.Where(x=> x.CityId.ToString() == cityId)
+            select new SelectListItem() { 
+                Value = p.Id.ToString(),
+                Text = p.DistrictName,
+            });
+            return ret.ToList();
         }
 
         public List<VillageViewModel> GetAll(string field, string searchText, int page, int recordPerPage)
@@ -63,6 +91,54 @@ namespace PostalCodeTest.Services
         {
             return db.Villages.Find(id);
 
+        }
+        public async Task<int> Save(Village model)
+        {
+            try
+            {
+                var village = new Village()
+                {
+                    DistrictId = model.DistrictId,
+                    VillageName = model.VillageName,
+                    PostalCode = model.PostalCode,
+                };
+                db.Villages.Add(village);
+                var success = await db.SaveChangesAsync() > 0;
+                if (success)
+                {
+                    return 1;
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+        public async Task<int> Edit(Village model)
+        {
+            try
+            {                
+                var data = db.Villages.Find(model.Id);
+                if (data != null)
+                {
+                    data.DistrictId = model.DistrictId;
+                    data.VillageName = model.VillageName;
+                    data.PostalCode = model.PostalCode;
+
+                    var success = await db.SaveChangesAsync() > 0;
+                    if (success)
+                    {
+                        return 1;
+                    }
+
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
 
         public async Task<int> Delete(int id)
